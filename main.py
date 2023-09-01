@@ -1,31 +1,30 @@
 from pkg.plugin.models import *
 from pkg.plugin.host import EventContext, PluginHost
-
+import plugins.emoticon.config as config
 
 """
 多段回复
 """
+
 # 注册插件
 @register(name="SplitNewline", description="多段回复", version="0.1", author="cillow")
-
 class SplitNewlinePlugin(Plugin):
+    # 定义一个函数，接受一个事件名和一个字典作为参数
+    # 当收到GPT回复时触发
     
     # 插件加载时触发
     # plugin_host (pkg.plugin.host.PluginHost) 提供了与主程序交互的一些方法，详细请查看其源码
     def __init__(self, plugin_host: PluginHost):
         pass
-    # 定义一个函数，接受一个事件名和一个字典作为参数
-    # 当收到GPT回复时触发
-
     @on(NormalMessageResponded)
     def on_event(self, event: EventContext, **kwargs):
         # 判断事件名是否是NormalMessageResponded
         # 获取事件参数中的响应文本
         response_text = kwargs["response_text"]
-        # 判断响应文本是否包含\h
-        if "\h" in response_text:
+        # 判断响应文本是否包含换行符
+        if "/n" in response_text:
             # 按换行符分割响应文本
-            parts = response_text.split("\h")
+            parts = response_text.split("/n")
             # 创建一个空列表，用来存储修改后的回复消息组件
             reply = []
             # 遍历每个部分
@@ -35,7 +34,7 @@ class SplitNewlinePlugin(Plugin):
             # 返回修改后的回复列表，替换原始回复
             return {"reply": reply}
             #debug 输出内容
-            logging.debug(reply)
+            logging.debug("SplitNewline插件进入成功！"+reply)
 
         
 
