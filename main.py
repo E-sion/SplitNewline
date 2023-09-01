@@ -29,7 +29,7 @@ class SplitNewlinePlugin(Plugin):
              # 遍历列表中的每个元素
             for part in parts:
             # 打印元素
-                event.add_return("reply", [reply])
+                event.add_return("reply",part)
         # 回复消息
         print_split(response_text)
         
