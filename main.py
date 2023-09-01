@@ -1,6 +1,5 @@
 from pkg.plugin.models import *
 from pkg.plugin.host import EventContext, PluginHost
-import plugins.emoticon.config as config
 
 """
 多段回复
