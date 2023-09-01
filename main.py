@@ -9,7 +9,11 @@ from pkg.plugin.host import EventContext, PluginHost
 @register(name="SplitNewline", description="多段回复", version="0.1", author="cillow")
 
 class SplitNewlinePlugin(Plugin):
-
+    
+    # 插件加载时触发
+    # plugin_host (pkg.plugin.host.PluginHost) 提供了与主程序交互的一些方法，详细请查看其源码
+    def __init__(self, plugin_host: PluginHost):
+        pass
     # 定义一个函数，接受一个事件名和一个字典作为参数
     # 当收到GPT回复时触发
 
