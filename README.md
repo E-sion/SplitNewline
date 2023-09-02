@@ -1,5 +1,8 @@
 # SplitNewline
-多段回复
+https://github.com/RockChinQ/QChatGPT/
+
+ChatQbotGPT多段回复插件
+
 # 可自定义根据bot回复的内容换行输出。
 
 如：原bot回复“你好，我是chatgpt•一个人工智能”
