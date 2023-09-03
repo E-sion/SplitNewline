@@ -1,43 +1,83 @@
 from pkg.plugin.models import *
 from pkg.plugin.host import EventContext, PluginHost
+
+from mirai import Image
 import re
-from time import sleep
 
 """
-多段回复
+在收到GPT接口回复时，检测“:xxx:”格式的表情包表达式，将其替换为Image"
 """
 
 
 # 注册插件
-@register(name="SplitNewline", description="多段回复", version="0.1", author="ciallo")
-class SplitNewlinePlugin(Plugin):
-
+@register(name="Emoticon-Girl", description="表情包表达式转换", version="0.1", author="ciallo")
+class HelloPlugin(Plugin):
     # 插件加载时触发
     # plugin_host (pkg.plugin.host.PluginHost) 提供了与主程序交互的一些方法，详细请查看其源码
     def __init__(self, plugin_host: PluginHost):
         pass
 
-    # 定义一个函数，接受一个事件名和一个字典作为参数
-    # 当收到GPT回复时触发
     @on(NormalMessageResponded)
-    def on_event(self, event: EventContext, **kwargs):
-        # 获取事件参数中的响应文本
-        responses_text = kwargs['response_text']
+    # 当收到GPT回复时触发
+    def Emoticon(self, event: EventContext, **kwargs):
+        responses_text: str = kwargs['response_text']
 
-        pattern = "·"
+        # 表情字典，可指定文本和图片链接
+        emotions = {
+            "love": [
+                'https://img1.ali213.net/glpic/2022/01/25/584_20220125101547775.png'
+            ],
+            "sad": [
+                'https://img1.ali213.net/glpic/2022/01/25/584_20220125101504258.jpg'
+            ],
+            "idc": [
+                'https://img1.ali213.net/glpic/2022/01/25/584_2022012510150485.png'
+            ],
+            "die": [
+                'https://img1.ali213.net/glpic/2022/01/25/584_20220125101504878.png'
+            ],
+            "sorry": [
+                'https://img1.ali213.net/glpic/2022/01/25/584_20220125101504618.png'
+            ],
+            "ok": [
+                'https://img1.ali213.net/glpic/2022/01/25/584_20220125101504835.png'
+            ],
+            "this": [
+                'https://img1.ali213.net/glpic/2022/01/25/584_2022012510150417.png'
+            ],
+            "resist": [
+                'pic/resist.jpg']
+        }
 
-        parts = re.split(pattern, responses_text)
+        # 后续改一下正则
+        ma = re.search('\:[a-z]+\:', responses_text)
 
-        # 遍历列表中的每个元素
-        for msg in parts:
-            
-            # send_person_message
-            host: pkg.plugin.host.PluginHost = kwargs['host']
-            host.send_person_message(kwargs['launcher_id'], msg) if kwargs['launcher_type'] == 'person' else host.send_group_message(
-                kwargs['launcher_id'], msg)
-        event.prevent_default()
-        event.prevent_postorder()
-        
-    # 插件卸载时触发
-    def __del__(self):
-        pass
+        if ma:
+            emotion = ma.group()[1:-1]
+            if emotion in emotions.keys():
+
+                # 获取表情指定url
+                url: str = emotions[emotion]
+                logging.debug('choose emotion: {}'.format(url))
+
+                # 将回复处理掉表情文本
+                msg = responses_text.replace(ma.group(), '')
+
+                # 分别发送文本和表情
+                host: pkg.plugin.host.PluginHost = kwargs['host']
+
+
+                if kwargs['launcher_type'] == 'person':
+                    host.send_person_message(kwargs['launcher_id'], msg)
+                    host.send_person_message(kwargs['launcher_id'], Image(url=url))
+                else:
+                    host.send_group_message(kwargs['launcher_id'], msg)
+                    host.send_group_message(kwargs['launcher_id'], Image(url=url))
+
+                event.prevent_default()
+                event.prevent_postorder()
+
+
+# 插件卸载时触发
+def __del__(self):
+    pass
