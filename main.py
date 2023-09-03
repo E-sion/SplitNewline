@@ -9,7 +9,7 @@ from time import sleep
 
 
 # 注册插件
-@register(name="SplitNewline", description="多段回复", version="0.1", author="cillow")
+@register(name="SplitNewline", description="多段回复", version="0.1", author="ciallo")
 class SplitNewlinePlugin(Plugin):
 
     # 插件加载时触发
